@@ -57,6 +57,11 @@ public class CallCenter {
                 e.printStackTrace();
             }
         }
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'run'");
+        }
     }
 
     /*
@@ -80,6 +85,12 @@ public class CallCenter {
                     e.printStackTrace();
             }
         }
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'run'");
+        }
     }
 
     /*
@@ -94,6 +105,13 @@ public class CallCenter {
         //Feel free to modify the constructor
         public Customer (int i){
             ID = i;
+        }
+
+
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'run'");
         }
     }
 
