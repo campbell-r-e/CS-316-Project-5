@@ -105,7 +105,7 @@ public class CallCenter {
                 try{
                     Customer customer=waitQueue.take();
                     greet(customer.ID);
-                    serveQueue.put(custom);
+                    serveQueue.put(customer);
                     System.out.println("Customer: " + customer.ID + "has been placed in serve queue at position "+ serveQueue.size());
                     greetedCount.incrementAndGet();
                 }catch(InterruptedException e){
@@ -127,7 +127,7 @@ public class CallCenter {
         //Feel free to modify the constructor
         public Customer (int i){
             ID = i;
-            
+
         }
 
 
