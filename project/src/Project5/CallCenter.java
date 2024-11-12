@@ -59,8 +59,16 @@ public class CallCenter {
         }
         @Override
         public void run() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'run'");
+            int sCount=0;
+            while(sCount<CUSTOMERS_PER_AGENT){
+                try{
+                    Customer customer=serveQueue.take();
+                    serve(customer.ID);
+                    sCount++;
+                }catch(InterruptedException e ){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
