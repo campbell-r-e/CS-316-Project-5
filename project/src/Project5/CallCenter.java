@@ -4,6 +4,8 @@ package Project5;
     You can import any additional package here.
  */
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static java.lang.Thread.sleep;
 
 public class CallCenter {
@@ -59,8 +61,16 @@ public class CallCenter {
         }
         @Override
         public void run() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'run'");
+            int sCount=0;
+            while(sCount<CUSTOMERS_PER_AGENT){
+                try{
+                    Customer customer=serveQueue.take();
+                    serve(customer.ID);
+                    sCount++;
+                }catch(InterruptedException e ){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -68,7 +78,10 @@ public class CallCenter {
         The greeter class.
      */
     public static class Greeter implements Runnable{
+        private final AtomicInteger greetedCount = new AtomicInteger(0);
+
     //TODO: complete the Greeter class
+
 
      /*
         Your implementation must call the method below to serve each customer.
@@ -88,8 +101,17 @@ public class CallCenter {
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'run'");
+            while(greetedCount.get()<NUMBER_OF_CUSTOMERS){
+                try{
+                    Customer customer=waitQueue.take();
+                    greet(customer.ID);
+                    serveQueue.put(custom);
+                    System.out.println("Customer: " + customer.ID + "has been placed in serve queue at position "+ serveQueue.size());
+                    greetedCount.incrementAndGet();
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
