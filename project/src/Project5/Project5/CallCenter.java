@@ -32,8 +32,8 @@ public class CallCenter {
       Number of threads to use for this simulation.
      */
     private static final int NUMBER_OF_THREADS = 10;
-    private static final BlockingQueue<Customer> serveQueue = new LinkedBlockingQueue<>();
-    private static final BlockingQueue<Customer> waitQueue = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<Integer> serveQueue = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<Integer> waitQueue = new LinkedBlockingQueue<>();
 
 
 
@@ -104,7 +104,7 @@ public class CallCenter {
         public void run() {
             while(greetedCount.get()<NUMBER_OF_CUSTOMERS){
                 try{
-                    Customer customer=waitQueue.take();
+                    Integer customer=waitQueue.take();
                     greet(customer.ID);
                     serveQueue.put(customer);
                     System.out.println("Customer: " + customer.ID + "has been placed in serve queue at position "+ serveQueue.size());
@@ -134,8 +134,12 @@ public class CallCenter {
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'run'");
+            try {
+                System.out.println("Customer " + ID + " has arrived.");
+                waitQueue.put(this); // Add to the wait queue
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
