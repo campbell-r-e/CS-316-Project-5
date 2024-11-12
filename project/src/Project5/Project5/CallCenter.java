@@ -1,5 +1,7 @@
 package Project5;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 /*
     You can import any additional package here.
  */
@@ -30,13 +32,15 @@ public class CallCenter {
       Number of threads to use for this simulation.
      */
     private static final int NUMBER_OF_THREADS = 10;
+    private static final BlockingQueue<Customer> serveQueue = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<Customer> waitQueue = new LinkedBlockingQueue<>();
+
 
 
     /*
        The Agent class.
      */
     public static class Agent implements Runnable {
-    //TODO: complete the agent class
         //The ID of the agent
         private final int ID;
 
@@ -79,9 +83,6 @@ public class CallCenter {
      */
     public static class Greeter implements Runnable{
         private final AtomicInteger greetedCount = new AtomicInteger(0);
-
-    //TODO: complete the Greeter class
-
 
      /*
         Your implementation must call the method below to serve each customer.
