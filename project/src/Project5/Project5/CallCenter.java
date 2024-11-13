@@ -1,6 +1,8 @@
 package Project5;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 /*
     You can import any additional package here.
@@ -8,8 +10,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.oracle.jrockit.jfr.Producer;
+
 import static java.lang.Thread.sleep;
 
+@SuppressWarnings("deprecation")
 public class CallCenter {
 
     /*
@@ -148,7 +153,13 @@ public class CallCenter {
         to simulate a random interval between customer calls, sleep for a random period after creating each customer task.
      */
     public static void main(String[] args){
-    //TODO: complete the main method
+      ExecutorService es= Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+        for(int i=0;i<NUMBER_OF_CUSTOMERS;i++){
+            es.submit(new Customer(i));
+            es.submit(new Greeter());
+            es.submit(new Agent(i));
+        }
+        es.shutdown();
     }
 
 }
