@@ -153,13 +153,27 @@ public class CallCenter {
         to simulate a random interval between customer calls, sleep for a random period after creating each customer task.
      */
     public static void main(String[] args){
-      ExecutorService es= Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-        for(int i=0;i<NUMBER_OF_CUSTOMERS;i++){
-            es.submit(new Customer(i));
+    
+
+
+     
+            ExecutorService es= Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
             es.submit(new Greeter());
-            es.submit(new Agent(i));
-        }
-        es.shutdown();
+            for(int w =0; w<=NUMBER_OF_AGENTS;w++){
+              es.submit(new Agent(w));
+            }
+      
+              for(int i=0;i<NUMBER_OF_CUSTOMERS;i++){
+                  es.submit(new Customer(i));
+                  
+                 
+              }
+              es.shutdown();
+      
+          
+        
+        
     }
 
 }
