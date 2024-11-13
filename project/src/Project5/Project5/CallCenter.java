@@ -160,7 +160,7 @@ public class CallCenter {
             ExecutorService es= Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
             es.submit(new Greeter());
-            for(int w =0; w<=NUMBER_OF_AGENTS;w++){
+            for(int w =1; w<=NUMBER_OF_AGENTS;w++){
               es.submit(new Agent(w));
             }
       
