@@ -68,8 +68,8 @@ public class CallCenter {
             int sCount=0;
             while(sCount<CUSTOMERS_PER_AGENT){
                 try{
-                    Customer customer=serveQueue.take();
-                    serve(customer.ID);
+                    int customer=serveQueue.take();
+                    serve(customer);
                     sCount++;
                 }catch(InterruptedException e ){
                     e.printStackTrace();
@@ -105,9 +105,9 @@ public class CallCenter {
             while(greetedCount.get()<NUMBER_OF_CUSTOMERS){
                 try{
                     Integer customer=waitQueue.take();
-                    greet(customer.ID);
+                    greet(customer);
                     serveQueue.put(customer);
-                    System.out.println("Customer: " + customer.ID + "has been placed in serve queue at position "+ serveQueue.size());
+                    System.out.println("Customer: " + customer + "has been placed in serve queue at position "+ serveQueue.size());
                     greetedCount.incrementAndGet();
                 }catch(InterruptedException e){
                     e.printStackTrace();
@@ -136,7 +136,7 @@ public class CallCenter {
         public void run() {
             try {
                 System.out.println("Customer " + ID + " has arrived.");
-                waitQueue.put(this); // Add to the wait queue
+                waitQueue.put(ID); // Add to the wait queue
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
