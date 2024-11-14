@@ -10,11 +10,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.oracle.jrockit.jfr.Producer;
+
 
 import static java.lang.Thread.sleep;
 
-@SuppressWarnings("deprecation")
+
 public class CallCenter {
 
     /*
