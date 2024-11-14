@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
     You can import any additional package here.
  */
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 
 
@@ -87,33 +87,33 @@ public class CallCenter {
         The greeter class.
      */
     public static class Greeter implements Runnable{
-        private final AtomicInteger greetedCount = new AtomicInteger(0);
-
-     /*
-        Your implementation must call the method below to serve each customer.
-        Do not modify this method.
-         */
-        public void greet(int customerID) {
-            System.out.println("Greeting customer " + customerID);
-                try {
-                    /*
-                    Simulate busy serving a customer by sleeping for a random amount of time.
-                    */
-                    sleep(ThreadLocalRandom.current().nextInt(10, 1000));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void run() {
-            while(greetedCount.get()<NUMBER_OF_CUSTOMERS){
-                try{
-                    Integer customer=waitQueue.take();
-                    greet(customer);
-                    serveQueue.put(customer);
-                    System.out.println("Customer: " + customer + "has been placed in serve queue at position "+ serveQueue.size());
-                    greetedCount.incrementAndGet();
+        private int greetedCount=0;
+        
+             /*
+                Your implementation must call the method below to serve each customer.
+                Do not modify this method.
+                 */
+                public void greet(int customerID) {
+                    System.out.println("Greeting customer " + customerID);
+                        try {
+                            /*
+                            Simulate busy serving a customer by sleeping for a random amount of time.
+                            */
+                            sleep(ThreadLocalRandom.current().nextInt(10, 1000));
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                    }
+                }
+        
+                @Override
+                public void run() {
+                    while(greetedCount<NUMBER_OF_CUSTOMERS){
+                        try{
+                            Integer customer_num=waitQueue.take();
+                            greet(customer_num);
+                            serveQueue.put(customer_num);
+                            System.out.println(customer_num + " is in serve queue at position "+ serveQueue.size());
+                            greetedCount++;
                 }catch(InterruptedException e){
                     e.printStackTrace();
                 }
@@ -140,8 +140,8 @@ public class CallCenter {
         @Override
         public void run() {
             try {
-                System.out.println("Customer " + ID + " has arrived.");
-                waitQueue.put(ID); // Add to the wait queue
+                System.out.println(ID + " has arrived.");
+                waitQueue.put(ID); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -160,11 +160,11 @@ public class CallCenter {
             ExecutorService es= Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
             es.submit(new Greeter());
-            for(int w =1; w<=NUMBER_OF_AGENTS;w++){
+            for(int w =0; w<=NUMBER_OF_AGENTS;w++){
               es.submit(new Agent(w));
             }
       
-              for(int i=0;i<NUMBER_OF_CUSTOMERS;i++){
+              for(int i=1;i<NUMBER_OF_CUSTOMERS;i++){
                   es.submit(new Customer(i));
                 
                  
