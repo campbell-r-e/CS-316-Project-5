@@ -164,7 +164,7 @@ public class CallCenter {
               es.submit(new Agent(w));
             }
       
-              for(int i=1;i<NUMBER_OF_CUSTOMERS;i++){
+              for(int i=0;i<NUMBER_OF_CUSTOMERS;i++){
                   es.submit(new Customer(i));
                 
                  
