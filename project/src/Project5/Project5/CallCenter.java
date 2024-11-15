@@ -1,6 +1,7 @@
 package Project5;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,6 +17,7 @@ import static java.lang.Thread.sleep;
 
 
 public class CallCenter {
+    
 
     /*
        Total number of customers that each agent will serve in this simulation.
@@ -32,6 +34,7 @@ public class CallCenter {
        Total number of customers to create for this simulation.
      */
     private static final int NUMBER_OF_CUSTOMERS = NUMBER_OF_AGENTS * CUSTOMERS_PER_AGENT;
+        private static final CountDownLatch latch = new CountDownLatch(NUMBER_OF_CUSTOMERS);
 
     /*
       Number of threads to use for this simulation.
@@ -67,6 +70,7 @@ public class CallCenter {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            latch.countDown();
         }
         @Override
         public void run() {
@@ -132,7 +136,7 @@ public class CallCenter {
 
         //Feel free to modify the constructor
         public Customer (int i){
-            ID = i;
+            ID = i+1;
 
         }
 
@@ -160,15 +164,23 @@ public class CallCenter {
             ExecutorService es= Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
             es.submit(new Greeter());
-            for(int w =0; w<=NUMBER_OF_AGENTS;w++){
+            for(int w =1; w<=NUMBER_OF_AGENTS;w++){
               es.submit(new Agent(w));
             }
       
-              for(int i=1;i<NUMBER_OF_CUSTOMERS;i++){
+              for(int i=0;i<NUMBER_OF_CUSTOMERS;i++){
                   es.submit(new Customer(i));
                 
                  
               }
+
+
+
+              try {
+                latch.await(); 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
               es.shutdown();
       
           
