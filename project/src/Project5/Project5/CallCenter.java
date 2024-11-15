@@ -44,9 +44,7 @@ public class CallCenter {
     private final static Condition notEmpty = lock.newCondition();
     private final static Condition notEmptyTwo = lockTwo.newCondition();
 
-    /*
-       The Agent class.
-     */
+   
     public static class Agent implements Runnable {
         // The ID of the agent
         private final int ID;
@@ -94,9 +92,7 @@ public class CallCenter {
         }
     }
 
-    /*
-        The Greeter class.
-     */
+   
     public static class Greeter implements Runnable {
         private int greetedCount = 0;
 
