@@ -9,9 +9,8 @@ import java.util.concurrent.LinkedBlockingQueue;
     You can import any additional package here.
  */
 import java.util.concurrent.ThreadLocalRandom;
-
-
-
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Thread.sleep;
 
@@ -42,6 +41,16 @@ public class CallCenter {
     private static final int NUMBER_OF_THREADS = 10;
     private static final BlockingQueue<Integer> serveQueue = new LinkedBlockingQueue<>();
     private static final BlockingQueue<Integer> waitQueue = new LinkedBlockingQueue<>();
+    private final static ReentrantLock lock= new ReentrantLock();
+    private final static ReentrantLock lockTwo= new ReentrantLock();
+    private final static Condition notEmpty=lock.newCondition();
+    private final static Condition notEmptyTwo=lockTwo.newCondition();
+    
+
+
+
+
+
 
 
 
@@ -70,19 +79,26 @@ public class CallCenter {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            latch.countDown();
         }
         @Override
         public void run() {
             int sCount=0;
             while(sCount<CUSTOMERS_PER_AGENT){
+                int customer=0;
+                lockTwo.lock();
                 try{
-                    int customer=serveQueue.take();
-                    serve(customer);
+                    while(serveQueue.isEmpty()){
+                        notEmptyTwo.await();
+                    }
+                    customer=serveQueue.take();
                     sCount++;
                 }catch(InterruptedException e ){
                     e.printStackTrace();
+                }finally{
+                    lockTwo.unlock();
                 }
+                serve(customer);
+
             }
         }
     }
@@ -112,18 +128,35 @@ public class CallCenter {
                 @Override
                 public void run() {
                     while(greetedCount<NUMBER_OF_CUSTOMERS){
+                        int customer_num=0;
+                        lock.lock();
                         try{
-                            Integer customer_num=waitQueue.take();
+                            while(waitQueue.isEmpty()){
+                               notEmptyTwo.await(); 
+                            }
+
+                             customer_num=waitQueue.take();
+                        }catch(InterruptedException e){
+                            e.printStackTrace();
+                        }
+                        finally{
+                            lock.unlock();
+                        }
                             greet(customer_num);
-                            serveQueue.put(customer_num);
-                            System.out.println(customer_num + " is in serve queue at position "+ serveQueue.size());
-                            greetedCount++;
-                }catch(InterruptedException e){
-                    e.printStackTrace();
+                            try{
+                                serveQueue.put(customer_num);
+                                System.out.println(customer_num + " is in serve queue at position "+ serveQueue.size());
+                                greetedCount++;
+                            }catch(InterruptedException e ){
+                                e.printStackTrace();
+                            }
+                            
+                }
                 }
             }
         }
-    }
+    
+    
 
     /*
         The customer class.
@@ -143,11 +176,15 @@ public class CallCenter {
 
         @Override
         public void run() {
+            lock.lock();
             try {
-                System.out.println(ID + " has arrived.");
                 waitQueue.put(ID); 
+                System.out.println(ID + " has arrived.");
+                notEmpty.signal();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }finally{
+                lock.unlock();
             }
         }
     }
@@ -183,9 +220,4 @@ public class CallCenter {
             }
               es.shutdown();
       
-          
-        
-        
     }
-
-}
