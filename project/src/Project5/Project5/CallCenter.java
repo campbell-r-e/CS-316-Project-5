@@ -31,7 +31,7 @@ public class CallCenter {
        Total number of customers to create for this simulation.
      */
     private static final int NUMBER_OF_CUSTOMERS = NUMBER_OF_AGENTS * CUSTOMERS_PER_AGENT;
-    private static final CountDownLatch latch = new CountDownLatch(NUMBER_OF_CUSTOMERS);
+   
 
     /*
       Number of threads to use for this simulation.
@@ -132,13 +132,21 @@ public class CallCenter {
                     lock.unlock();
                 }
                 greet(customer_num);
+               
                 try {
+                    lockTwo.lock();
                     serveQueue.put(customer_num);
                     System.out.println(customer_num + " is in serve queue at position " + serveQueue.size());
+                    notEmptyTwo.signal();
                     greetedCount++;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }finally{
+                    lockTwo.unlock();
                 }
+
+                
+                
             }
         }
     }
@@ -184,18 +192,10 @@ public class CallCenter {
 
         for (int i = 0; i < NUMBER_OF_CUSTOMERS; i++) {
             es.submit(new Customer(i));
-            try {
-                sleep(ThreadLocalRandom.current().nextInt(10, 100));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+           
         }
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        
         es.shutdown();
     }
 }
